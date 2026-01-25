@@ -1,0 +1,16 @@
+# HTTP 客户端
+httpx>=0.24.0
+
+# 浏览器自动化
+playwright>=1.40.0
+
+# Web 框架
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+
+# 表单数据处理（FastAPI Form 必需）
+python-multipart>=0.0.6
+
+# 注意：
+# - websockets 包不需要单独安装，FastAPI 内置了 WebSocket 支持
+# - tkinter 是 Python 标准库，不需要安装（仅 token_manager.py 使用）
