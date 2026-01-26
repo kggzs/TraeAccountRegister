@@ -118,6 +118,29 @@ python register.py 1
 python register.py 5 2
 ```
 
+### 🛠️ Token 管理器 (GUI)
+
+一个独立的桌面应用程序，用于便捷地管理账号和提取 Token/Cookies。
+
+1. **启动工具**
+   ```bash
+   python token_manager.py
+   ```
+
+2. **核心功能**
+   - **可视化管理**：自动加载 `accounts.txt` 中的账号列表，左侧列表点击即可查看详情。
+   - **一键提取**：
+     - 选中账号后点击“获取 Token & Cookies”按钮。
+     - 程序会自动启动无头浏览器，模拟登录并提取凭证。
+     - **极速模式**：内置性能优化，自动拦截图片/媒体资源加载，提升提取速度。
+   - **数据展示与导出**：
+     - 提取成功后，Token 和 Cookies 会直接显示在界面文本框中。
+     - 支持“复制 Token”和“复制 Cookies”一键复制到剪贴板。
+     - 自动保存文件：
+       - Token 保存至 `GetUserToken/<email>.json`
+       - Cookies 保存至 `cookies/<email>.json`
+   - **实时日志**：界面右下角显示详细的操作日志，方便监控运行状态和排查错误。
+
 ## � 相关项目推荐
 
 ### [Trae 账户管理器](https://github.com/Yang-505/Trae-Account-Manager)
