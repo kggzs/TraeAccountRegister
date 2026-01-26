@@ -497,14 +497,27 @@ async def get_token_logic(email, password):
                 token_str = json.dumps(token_data, ensure_ascii=False)
                 app_state.current_token = token_str
                 
-                # Broadcast token to websockets
+                # Get and save cookies
+                cookies = await context.cookies()
+                cookie_path = os.path.join(COOKIES_DIR, f"{email}.json")
+                with open(cookie_path, "w", encoding="utf-8") as f:
+                    json.dump(cookies, f, ensure_ascii=False, indent=2)
+                
+                cookie_str = json.dumps(cookies, ensure_ascii=False, indent=2)
+                app_state.log("Token 获取成功！")
+                app_state.log(f"Cookies 已保存到: {cookie_path}")
+                app_state.log(f"Cookies 内容:\n{cookie_str}")
+                
+                # Broadcast token and cookies to websockets
                 for ws in app_state.websockets.copy():
                     try:
-                        asyncio.create_task(ws.send_json({"type": "token", "token": token_str}))
+                        asyncio.create_task(ws.send_json({
+                            "type": "token", 
+                            "token": token_str,
+                            "cookies": cookie_str
+                        }))
                     except:
                         app_state.websockets.discard(ws)
-                
-                app_state.log("Token 获取成功！")
                 
             except Exception as e:
                 app_state.log(f"获取 Token 失败: {e}")

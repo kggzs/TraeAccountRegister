@@ -1021,6 +1021,13 @@
                         </div>
                         <div class="token-display" id="tokenDisplay">等待获取Token...</div>
                     </div>
+                    <div class="card">
+                        <div class="card-title">
+                            🍪 Cookies
+                            <button class="btn" style="margin-left: auto; padding: 8px 16px; font-size: 12px; background: var(--bg-log); color: var(--text);" onclick="copyCookies()">📋 复制</button>
+                        </div>
+                        <div class="token-display" id="cookiesDisplay">等待获取Cookies...</div>
+                    </div>
                     <div class="card" style="margin-bottom: 0;">
                         <div class="card-title">📝 工作日志</div>
                         <div class="log-area" id="tokenLogArea" style="height: 400px;"></div>
@@ -1082,7 +1089,12 @@
                 } else if (data.type === 'status') {
                     updateStatus(data.is_running);
                 } else if (data.type === 'token') {
-                    document.getElementById('tokenDisplay').textContent = data.token;
+                    if (data.token) {
+                        document.getElementById('tokenDisplay').textContent = data.token;
+                    }
+                    if (data.cookies) {
+                        document.getElementById('cookiesDisplay').textContent = data.cookies;
+                    }
                 }
             };
             
@@ -1233,6 +1245,7 @@
                 }
             });
             document.getElementById('tokenDisplay').textContent = '等待获取Token...';
+            document.getElementById('cookiesDisplay').textContent = '等待获取Cookies...';
         }
 
         async function getToken() {
@@ -1264,6 +1277,15 @@
             if (token && token !== '等待获取Token...') {
                 navigator.clipboard.writeText(token).then(() => {
                     alert('Token 已复制到剪贴板');
+                });
+            }
+        }
+
+        function copyCookies() {
+            const cookies = document.getElementById('cookiesDisplay').textContent;
+            if (cookies && cookies !== '等待获取Cookies...') {
+                navigator.clipboard.writeText(cookies).then(() => {
+                    alert('Cookies 已复制到剪贴板');
                 });
             }
         }
@@ -1474,10 +1496,39 @@
             const tokenTab = document.getElementById('tabToken');
             
             if (accountList && tokenTab && tokenTab.classList.contains('active')) {
-                // 强制设置账号列表高度为1100px
-                accountList.style.height = '1100px';
-                accountList.style.maxHeight = '1100px';
-                accountList.style.overflowY = 'auto';
+                // 获取右侧容器（包含多个卡片的容器）
+                const rightColumn = tokenTab.querySelector('.grid-2 > div:last-child');
+                // 获取左侧卡片容器（包含账号列表的卡片）
+                const leftCard = accountList.closest('.card');
+                
+                if (rightColumn && leftCard) {
+                    // 获取右侧容器的实际高度
+                    const rightColumnHeight = rightColumn.offsetHeight;
+                    
+                    // 获取左侧卡片标题的高度
+                    const cardTitle = leftCard.querySelector('.card-title');
+                    const cardTitleHeight = cardTitle ? cardTitle.offsetHeight : 0;
+                    
+                    // 获取左侧卡片的内边距
+                    const cardStyle = window.getComputedStyle(leftCard);
+                    const cardPaddingTop = parseFloat(cardStyle.paddingTop) || 28;
+                    const cardPaddingBottom = parseFloat(cardStyle.paddingBottom) || 28;
+                    
+                    // 获取账号列表的内边距
+                    const accountListStyle = window.getComputedStyle(accountList);
+                    const accountListPaddingTop = parseFloat(accountListStyle.paddingTop) || 12;
+                    const accountListPaddingBottom = parseFloat(accountListStyle.paddingBottom) || 12;
+                    
+                    // 计算账号列表应该的高度
+                    // = 右侧容器高度 - 卡片标题高度 - 卡片上下内边距 - 账号列表上下内边距
+                    const accountListHeight = rightColumnHeight - cardTitleHeight - cardPaddingTop - cardPaddingBottom - accountListPaddingTop - accountListPaddingBottom;
+                    
+                    // 设置账号列表高度，确保至少有 200px
+                    const finalHeight = Math.max(200, accountListHeight);
+                    accountList.style.height = finalHeight + 'px';
+                    accountList.style.maxHeight = finalHeight + 'px';
+                    accountList.style.overflowY = 'auto';
+                }
             }
         }
 
