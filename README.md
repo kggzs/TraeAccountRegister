@@ -1,4 +1,4 @@
-# Trae 账号注册工具
+# Trae 账号注册工具(已停止更新)
 
 <div align="center">
 
